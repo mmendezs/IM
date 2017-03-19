@@ -1,0 +1,47 @@
+---
+title: "R Notebook"
+output:
+  html_notebook: default
+  word_document: default
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+# Instalamos la librería haven si fuera necesario
+# Hemos de borrar el símbolo # antes de install....
+# install.packages('haven')
+# Cargamos la librería
+library(haven)
+# Leemos los datos en formato SPSS
+survey <- read_sav("survey.sav")
+# Vemos los datos importados
+View(survey)
+# Realizamos un resumen de cada una de las variables
+summary(survey)
+table(survey$Pc1_Actitud)
+```
+
+```{r}
+# Transformaremos los valores 0 en NA
+# Instalamos la librería dplyr si fuera necesario
+# Hemos de borrar el símbolo # antes de install....
+# install.packages('dplyr')
+# Cargamos la librería
+library(dplyr)
+# Creamos una función para reemplazar los valores 0 con NA
+# La función es similar al "si" de EXCEL
+# La interpretamos como: Si el valor que pasamos a la función
+# es 0, sustituyelo por NA, en caso contrario deja el valor
+repl.f <- function(x) ifelse(x%in%0, NA, x)
+# Aplicamos la función a todas las variables que empiezan con "P"
+survey <- cbind(mutate_each(select(survey, starts_with("P")), funs(repl.f)),
+                select(survey, -starts_with("P")))
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
