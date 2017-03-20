@@ -16,9 +16,9 @@ survey %>%
   select(starts_with("P")) %>% 
   
 
-# Define replace function
+# Creamos una función para reemplazar los valores 0 con NA
 repl.f <- function(x) ifelse(x%in%0, NA, x)
-
+# Aplicamos la función a todas las variables que empiezan con "P"
 survey <- cbind(mutate_each(select(survey, starts_with("P")), funs(repl.f)),
                 select(survey, -starts_with("P")))
                 

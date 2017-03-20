@@ -176,7 +176,7 @@ $(document).ready(function () {
 <p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Ctrl+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJbnN0YWxhbW9zIGxhIGxpYnJlcsOtYSBoYXZlbiBzaSBmdWVyYSBuZWNlc2FyaW9cbiMgSGVtb3MgZGUgYm9ycmFyIGVsIHPDrW1ib2xvICMgYW50ZXMgZGUgaW5zdGFsbC4uLi5cbiMgaW5zdGFsbC5wYWNrYWdlcygnaGF2ZW4nKVxuIyBDYXJnYW1vcyBsYSBsaWJyZXLDrWFcbmxpYnJhcnkoaGF2ZW4pXG4jIExlZW1vcyBsb3MgZGF0b3MgZW4gZm9ybWF0byBTUFNTXG5zdXJ2ZXkgPC0gcmVhZF9zYXYoXCJzdXJ2ZXkuc2F2XCIpXG4jIFZlbW9zIGxvcyBkYXRvcyBpbXBvcnRhZG9zXG5WaWV3KHN1cnZleSlcbiMgUmVhbGl6YW1vcyB1biByZXN1bWVuIGRlIGNhZGEgdW5hIGRlIGxhcyB2YXJpYWJsZXNcbnN1bW1hcnkoc3VydmV5KVxudGFibGUoc3VydmV5JFBjMV9BY3RpdHVkKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBJbnN0YWxhbW9zIGxhIGxpYnJlcsOtYSBoYXZlbiBzaSBmdWVyYSBuZWNlc2FyaW9cbiMgSGVtb3MgZGUgYm9ycmFyIGVsIHPDrW1ib2xvICMgYW50ZXMgZGUgaW5zdGFsbC4uLi5cbiMgaW5zdGFsbC5wYWNrYWdlcygnaGF2ZW4nKVxuIyBDYXJnYW1vcyBsYSBsaWJyZXLDrWFcbmxpYnJhcnkoaGF2ZW4pXG4jIExlZW1vcyBsb3MgZGF0b3MgZW4gZm9ybWF0byBTUFNTXG5zdXJ2ZXkgPC0gcmVhZF9zYXYoXCJzdXJ2ZXkuc2F2XCIpXG4jIFZlbW9zIGxvcyBkYXRvcyBpbXBvcnRhZG9zXG4jIFJlYWxpemFtb3MgdW4gcmVzdW1lbiBkZSBjYWRhIHVuYSBkZSBsYXMgdmFyaWFibGVzXG5zdW1tYXJ5KHN1cnZleSlcbmBgYCJ9 -->
 <pre class="r"><code># Instalamos la librería haven si fuera necesario
 # Hemos de borrar el símbolo # antes de install....
 # install.packages('haven')
@@ -185,23 +185,141 @@ library(haven)
 # Leemos los datos en formato SPSS
 survey &lt;- read_sav(&quot;survey.sav&quot;)
 # Vemos los datos importados
-View(survey)
 # Realizamos un resumen de cada una de las variables
-summary(survey)
-table(survey$Pc1_Actitud)</code></pre>
+summary(survey)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIEVzdGFibGVjaW1pZW50byAgUGMxX0FjdGl0dWQgICAgIFBjMV9BdGVuY2lvbiAgICBQYzFfQXRlbmNpb25fRXNwZXJhcyBQYzFfQ2xpZW50ZV9IYWJpdHVhbFxuIE1pbi4gICA6MS4wMDAgICBNaW4uICAgOiAwLjAwICAgTWluLiAgIDogMS4wMDAgICBNaW4uICAgOiAwLjAwMCAgICAgICBNaW4uICAgOiAwLjAwICAgICAgIFxuIDFzdCBRdS46MS4wMDAgICAxc3QgUXUuOiA1LjAwICAgMXN0IFF1LjogNS4wMDAgICAxc3QgUXUuOiA1LjAwMCAgICAgICAxc3QgUXUuOiA0LjAwICAgICAgIFxuIE1lZGlhbiA6Mi4wMDAgICBNZWRpYW4gOiA3LjAwICAgTWVkaWFuIDogNi4wMDAgICBNZWRpYW4gOiA2LjAwMCAgICAgICBNZWRpYW4gOiA1LjAwICAgICAgIFxuIE1lYW4gICA6Mi4wNDMgICBNZWFuICAgOiA2LjM3ICAgTWVhbiAgIDogNS45MDEgICBNZWFuICAgOiA1Ljk3MyAgICAgICBNZWFuICAgOiA1LjI1ICAgICAgIFxuIDNyZCBRdS46My4wMDAgICAzcmQgUXUuOiA4LjAwICAgM3JkIFF1LjogNy4wMDAgICAzcmQgUXUuOiA3LjAwMCAgICAgICAzcmQgUXUuOiA3LjAwICAgICAgIFxuIE1heC4gICA6My4wMDAgICBNYXguICAgOjEwLjAwICAgTWF4LiAgIDoxMC4wMDAgICBNYXguICAgOjEwLjAwMCAgICAgICBNYXguICAgOjEwLjAwICAgICAgIFxuICAgICAgICAgICAgICAgICBOQSdzICAgOjMgICAgICAgICAgICAgICAgICAgICAgICBOQSdzICAgOjEwICAgICAgICAgICBOQSdzICAgOjUyICAgICAgICAgIFxuIFBjMV9BY3RpdHVkX1NlcnZpY2lvIFBkMV9Bc2Vzb3JhbWllbnRvX09mZXJ0YSBQZDFfSW5mb3JtYWNpb25fQ29tcGxldGEgUGQxX0FzcGVjdG9zX1Bvc2l0aXZvc19OZWdhdGl2b3NcbiBNaW4uICAgOiAxLjAwMCAgICAgICBNaW4uICAgOiAxLjAwMCAgICAgICAgICAgTWluLiAgIDogMS4wMDAgICAgICAgICAgIE1pbi4gICA6IDEuMDAwICAgICAgICAgICAgICAgICAgXG4gMXN0IFF1LjogNS4wMDAgICAgICAgMXN0IFF1LjogNS4wMDAgICAgICAgICAgIDFzdCBRdS46IDUuMDAwICAgICAgICAgICAxc3QgUXUuOiA0LjAwMCAgICAgICAgICAgICAgICAgIFxuIE1lZGlhbiA6IDYuMDAwICAgICAgIE1lZGlhbiA6IDcuMDAwICAgICAgICAgICBNZWRpYW4gOiA2LjAwMCAgICAgICAgICAgTWVkaWFuIDogNS4wMDAgICAgICAgICAgICAgICAgICBcbiBNZWFuICAgOiA2LjE4MiAgICAgICBNZWFuICAgOiA2LjI4NyAgICAgICAgICAgTWVhbiAgIDogNi4yNDcgICAgICAgICAgIE1lYW4gICA6IDUuMzExICAgICAgICAgICAgICAgICAgXG4gM3JkIFF1LjogOC4wMDAgICAgICAgM3JkIFF1LjogOC4wMDAgICAgICAgICAgIDNyZCBRdS46IDguMDAwICAgICAgICAgICAzcmQgUXUuOiA3LjAwMCAgICAgICAgICAgICAgICAgIFxuIE1heC4gICA6MTAuMDAwICAgICAgIE1heC4gICA6MTAuMDAwICAgICAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICAgTWF4LiAgIDoxMC4wMDAgICAgICAgICAgICAgICAgICBcbiBOQSdzICAgOjMgICAgICAgICAgICBOQSdzICAgOjExICAgICAgICAgICAgICAgTkEncyAgIDoxNyAgICAgICAgICAgICAgIE5BJ3MgICA6NjkgICAgICAgICAgICAgICAgICAgICAgXG4gUGUxX0V4cGVyaWVuY2lhX0VtcGxlYWRvcyBQZTFfUmVzb2x2ZXJfQ29uc3VsdGFzIFBlMV9Db25vY2ltaWVudG9fR2FtYSBQZTFfRG9taW5pb19SZXNvbHZlcl9Db25zdWx0YXNcbiBNaW4uICAgOiAxLjAwICAgICAgICAgICAgIE1pbi4gICA6IDEuMDAgICAgICAgICAgTWluLiAgIDogMC4wMDAgICAgICAgIE1pbi4gICA6IDEuMDAwICAgICAgICAgICAgICAgIFxuIDFzdCBRdS46IDUuMDAgICAgICAgICAgICAgMXN0IFF1LjogNS4wMCAgICAgICAgICAxc3QgUXUuOiA1LjAwMCAgICAgICAgMXN0IFF1LjogNS4wMDAgICAgICAgICAgICAgICAgXG4gTWVkaWFuIDogNi4wMCAgICAgICAgICAgICBNZWRpYW4gOiA3LjAwICAgICAgICAgIE1lZGlhbiA6IDcuMDAwICAgICAgICBNZWRpYW4gOiA3LjAwMCAgICAgICAgICAgICAgICBcbiBNZWFuICAgOiA2LjE4ICAgICAgICAgICAgIE1lYW4gICA6IDYuNDQgICAgICAgICAgTWVhbiAgIDogNi40ODEgICAgICAgIE1lYW4gICA6IDYuMzY0ICAgICAgICAgICAgICAgIFxuIDNyZCBRdS46IDguMDAgICAgICAgICAgICAgM3JkIFF1LjogOC4wMCAgICAgICAgICAzcmQgUXUuOiA4LjAwMCAgICAgICAgM3JkIFF1LjogOC4wMDAgICAgICAgICAgICAgICAgXG4gTWF4LiAgIDoxMC4wMCAgICAgICAgICAgICBNYXguICAgOjEwLjAwICAgICAgICAgIE1heC4gICA6MTAuMDAwICAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICAgICAgICBcbiBOQSdzICAgOjEzICAgICAgICAgICAgICAgIE5BJ3MgICA6MTggICAgICAgICAgICAgTkEncyAgIDo5ICAgICAgICAgICAgIE5BJ3MgICA6MjcgICAgICAgICAgICAgICAgICAgIFxuIFBlMV9JbnRlcmVzX1Byb2JsZW1hcyBQZTFfVGllbXBvX0VzcGVyYV9BdGVuY2lvbiBQZTFfRHVyYWNpb25fRmlsYV9DYWphcyBQZTFfUmFwaWRlel9SZXNvbHZlcl9Db25zdWx0YXNcbiBNaW4uICAgOiAxLjAwMCAgICAgICAgTWluLiAgIDogMS4wMDAgICAgICAgICAgICAgTWluLiAgIDogMS4wMDAgICAgICAgICAgTWluLiAgIDogMS4wMDAgICAgICAgICAgICAgICAgXG4gMXN0IFF1LjogNS4wMDAgICAgICAgIDFzdCBRdS46IDUuMDAwICAgICAgICAgICAgIDFzdCBRdS46IDQuMDAwICAgICAgICAgIDFzdCBRdS46IDUuMDAwICAgICAgICAgICAgICAgIFxuIE1lZGlhbiA6IDcuMDAwICAgICAgICBNZWRpYW4gOiA2LjAwMCAgICAgICAgICAgICBNZWRpYW4gOiA2LjAwMCAgICAgICAgICBNZWRpYW4gOiA2LjAwMCAgICAgICAgICAgICAgICBcbiBNZWFuICAgOiA2LjM5MiAgICAgICAgTWVhbiAgIDogNS44ODcgICAgICAgICAgICAgTWVhbiAgIDogNS42NzUgICAgICAgICAgTWVhbiAgIDogNi4wMDUgICAgICAgICAgICAgICAgXG4gM3JkIFF1LjogOC4wMDAgICAgICAgIDNyZCBRdS46IDcuMDAwICAgICAgICAgICAgIDNyZCBRdS46IDcuMDAwICAgICAgICAgIDNyZCBRdS46IDcuMDAwICAgICAgICAgICAgICAgIFxuIE1heC4gICA6MTAuMDAwICAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICAgICAgICBcbiBOQSdzICAgOjE4ICAgICAgICAgICAgTkEncyAgIDo0ICAgICAgICAgICAgICAgICAgTkEncyAgIDo1ICAgICAgICAgICAgICAgTkEncyAgIDo0MCAgICAgICAgICAgICAgICAgICAgXG4gUGUxX05fRW1wbGVhZG9zX0NhamFzIFBlMV9UaWVtcG9fUmVjbGFtYWNpb24gUGUxX1NvbHVjaW9uX1F1ZWphcyBQZTFfU2VuY2lsbGV6X1RyYW1pdGVzXG4gTWluLiAgIDogMC4wICAgICAgICAgIE1pbi4gICA6IDAuMDAwICAgICAgICAgTWluLiAgIDogMC4wMDAgICAgICBNaW4uICAgOiAwLjAwMCAgICAgICAgXG4gMXN0IFF1LjogNC4wICAgICAgICAgIDFzdCBRdS46IDQuMDAwICAgICAgICAgMXN0IFF1LjogNS4wMDAgICAgICAxc3QgUXUuOiA1LjAwMCAgICAgICAgXG4gTWVkaWFuIDogNi4wICAgICAgICAgIE1lZGlhbiA6IDUuMDAwICAgICAgICAgTWVkaWFuIDogNi4wMDAgICAgICBNZWRpYW4gOiA2LjAwMCAgICAgICAgXG4gTWVhbiAgIDogNS44ICAgICAgICAgIE1lYW4gICA6IDUuNDM2ICAgICAgICAgTWVhbiAgIDogNS42MjMgICAgICBNZWFuICAgOiA1LjY0OSAgICAgICAgXG4gM3JkIFF1LjogOC4wICAgICAgICAgIDNyZCBRdS46IDcuMDAwICAgICAgICAgM3JkIFF1LjogNy4wMDAgICAgICAzcmQgUXUuOiA3LjAwMCAgICAgICAgXG4gTWF4LiAgIDoxMC4wICAgICAgICAgIE1heC4gICA6MTAuMDAwICAgICAgICAgTWF4LiAgIDoxMC4wMDAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgXG4gTkEncyAgIDoxNCAgICAgICAgICAgIE5BJ3MgICA6NDU3ICAgICAgICAgICAgTkEncyAgIDo0NDcgICAgICAgICBOQSdzICAgOjQ1MiAgICAgICAgICAgXG4gUGYxX0NvbXBldGl0aXZpZGFkX09mZXJ0YV9Qcm9kdWN0b3MgUGYxX0FtcGxpdHVkX09mZXJ0YV9Qcm9kdWN0b3MgUGYxX0JlbmVmaWNpb3NfQ29tcHJhX0hhYml0dWFsXG4gTWluLiAgIDogMC4wMDAgICAgICAgICAgICAgICAgICAgICAgTWluLiAgIDogMC4wMDAgICAgICAgICAgICAgICAgTWluLiAgIDogMC4wMDAgICAgICAgICAgICAgICAgXG4gMXN0IFF1LjogNS4wMDAgICAgICAgICAgICAgICAgICAgICAgMXN0IFF1LjogNS4wMDAgICAgICAgICAgICAgICAgMXN0IFF1LjogNS4wMDAgICAgICAgICAgICAgICAgXG4gTWVkaWFuIDogNy4wMDAgICAgICAgICAgICAgICAgICAgICAgTWVkaWFuIDogNy4wMDAgICAgICAgICAgICAgICAgTWVkaWFuIDogNy4wMDAgICAgICAgICAgICAgICAgXG4gTWVhbiAgIDogNi41MzQgICAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDogNi40NDcgICAgICAgICAgICAgICAgTWVhbiAgIDogNi4zNzYgICAgICAgICAgICAgICAgXG4gM3JkIFF1LjogOC4wMDAgICAgICAgICAgICAgICAgICAgICAgM3JkIFF1LjogOC4wMDAgICAgICAgICAgICAgICAgM3JkIFF1LjogOC4wMDAgICAgICAgICAgICAgICAgXG4gTWF4LiAgIDoxMC4wMDAgICAgICAgICAgICAgICAgICAgICAgTWF4LiAgIDoxMC4wMDAgICAgICAgICAgICAgICAgTWF4LiAgIDoxMC4wMDAgICAgICAgICAgICAgICAgXG4gTkEncyAgIDoxMyAgICAgICAgICAgICAgICAgICAgICAgICAgTkEncyAgIDoxMCAgICAgICAgICAgICAgICAgICAgTkEncyAgIDo0NSAgICAgICAgICAgICAgICAgICAgXG4gUGcxX05fRW1wbGVhZG9zX0FkZWN1YWRvIFBnMV9DYWphc19DZXJyYWRhcyBQZzFfRGVjb3JhY2lvbl9Fc3RhYmxlY2ltaWVudG9cbiBNaW4uICAgOiAxLjAwMCAgICAgICAgICAgTWluLiAgIDogMS4wMDAgICAgIE1pbi4gICA6IDEuMDAwICAgICAgICAgICAgICAgIFxuIDFzdCBRdS46IDUuMDAwICAgICAgICAgICAxc3QgUXUuOiA0LjAwMCAgICAgMXN0IFF1LjogNS4wMDAgICAgICAgICAgICAgICAgXG4gTWVkaWFuIDogNi4wMDAgICAgICAgICAgIE1lZGlhbiA6IDYuMDAwICAgICBNZWRpYW4gOiA2LjAwMCAgICAgICAgICAgICAgICBcbiBNZWFuICAgOiA1Ljk0NCAgICAgICAgICAgTWVhbiAgIDogNS42NDUgICAgIE1lYW4gICA6IDUuOTI2ICAgICAgICAgICAgICAgIFxuIDNyZCBRdS46IDcuMDAwICAgICAgICAgICAzcmQgUXUuOiA3LjAwMCAgICAgM3JkIFF1LjogNy4wMDAgICAgICAgICAgICAgICAgXG4gTWF4LiAgIDoxMC4wMDAgICAgICAgICAgIE1heC4gICA6MTAuMDAwICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICAgICAgICBcbiBOQSdzICAgOjcgICAgICAgICAgICAgICAgTkEncyAgIDo0NCAgICAgICAgIE5BJ3MgICA6OSAgICAgICAgICAgICAgICAgICAgIFxuIFBnMV9JbHVtaW5hY2lvbl9Fc3RhYmxlY2ltaWVudG8gUGcxX0NsaW1hdGl6YWNpb25fRXN0YWJsZWNpbWllbnRvIFBnMV9TZW5zYWNpb25fT3JkZW5fTGltcGllemFcbiBNaW4uICAgOiAwLjAwMCAgICAgICAgICAgICAgICAgIE1pbi4gICA6IDEuMDAwICAgICAgICAgICAgICAgICAgICBNaW4uICAgOiAxLjAwMCAgICAgICAgICAgICAgXG4gMXN0IFF1LjogNS4wMDAgICAgICAgICAgICAgICAgICAxc3QgUXUuOiA1LjAwMCAgICAgICAgICAgICAgICAgICAgMXN0IFF1LjogNS4wMDAgICAgICAgICAgICAgIFxuIE1lZGlhbiA6IDcuMDAwICAgICAgICAgICAgICAgICAgTWVkaWFuIDogNy4wMDAgICAgICAgICAgICAgICAgICAgIE1lZGlhbiA6IDcuMDAwICAgICAgICAgICAgICBcbiBNZWFuICAgOiA2LjU0MiAgICAgICAgICAgICAgICAgIE1lYW4gICA6IDYuNTIxICAgICAgICAgICAgICAgICAgICBNZWFuICAgOiA2LjQ2NCAgICAgICAgICAgICAgXG4gM3JkIFF1LjogOC4wMDAgICAgICAgICAgICAgICAgICAzcmQgUXUuOiA4LjAwMCAgICAgICAgICAgICAgICAgICAgM3JkIFF1LjogOC4wMDAgICAgICAgICAgICAgIFxuIE1heC4gICA6MTAuMDAwICAgICAgICAgICAgICAgICAgTWF4LiAgIDoxMC4wMDAgICAgICAgICAgICAgICAgICAgIE1heC4gICA6MTAuMDAwICAgICAgICAgICAgICBcbiBOQSdzICAgOjYgICAgICAgICAgICAgICAgICAgICAgIE5BJ3MgICA6OSAgICAgICAgICAgICAgICAgICAgICAgICBOQSdzICAgOjYgICAgICAgICAgICAgICAgICAgXG4gUGcxX0FtcGxpdHVkX0VzdGFibGVjaW1pZW50byBQZzFfU2XDsWFsaXphY2lvbl9BcmVhcyBQZzFfRmFjaWxpZGFkX0lkZW50aWZpY2FyX0NhZGVuYVxuIE1pbi4gICA6IDEuMDAwICAgICAgICAgICAgICAgTWluLiAgIDogMS4wMDAgICAgICAgICBNaW4uICAgOiAxLjAwMCAgICAgICAgICAgICAgICAgIFxuIDFzdCBRdS46IDUuMDAwICAgICAgICAgICAgICAgMXN0IFF1LjogNS4wMDAgICAgICAgICAxc3QgUXUuOiA2LjAwMCAgICAgICAgICAgICAgICAgIFxuIE1lZGlhbiA6IDcuMDAwICAgICAgICAgICAgICAgTWVkaWFuIDogNy4wMDAgICAgICAgICBNZWRpYW4gOiA3LjAwMCAgICAgICAgICAgICAgICAgIFxuIE1lYW4gICA6IDYuNjg5ICAgICAgICAgICAgICAgTWVhbiAgIDogNi4yMTEgICAgICAgICBNZWFuICAgOiA2LjkzMyAgICAgICAgICAgICAgICAgIFxuIDNyZCBRdS46IDguMDAwICAgICAgICAgICAgICAgM3JkIFF1LjogOC4wMDAgICAgICAgICAzcmQgUXUuOiA4LjAwMCAgICAgICAgICAgICAgICAgIFxuIE1heC4gICA6MTAuMDAwICAgICAgICAgICAgICAgTWF4LiAgIDoxMC4wMDAgICAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICAgICAgICAgIFxuIE5BJ3MgICA6NCAgICAgICAgICAgICAgICAgICAgTkEncyAgIDo2ICAgICAgICAgICAgICBOQSdzICAgOjEwICAgICAgICAgICAgICAgICAgICAgIFxuIFBoMV9SZWxhY2lvbl9DYWxpZGFkX1ByZWNpbyBQaDFfU2F0aXNmYWNjaW9uX0dsb2JhbCAgICBDMV9FZGFkICAgICAgICAgQzJfU2V4byAgICAgIEMzX0VzdGFkb19DaXZpbFxuIE1pbi4gICA6IDEuMDAgICAgICAgICAgICAgICBNaW4uICAgOiAxLjAwMCAgICAgICAgICBNaW4uICAgOjEuMDAwICAgTWluLiAgIDoxLjAwMCAgIE1pbi4gICA6MS4wMDAgIFxuIDFzdCBRdS46IDYuMDAgICAgICAgICAgICAgICAxc3QgUXUuOiA1LjAwMCAgICAgICAgICAxc3QgUXUuOjIuMDAwICAgMXN0IFF1LjoxLjAwMCAgIDFzdCBRdS46MS4wMDAgIFxuIE1lZGlhbiA6IDcuMDAgICAgICAgICAgICAgICBNZWRpYW4gOiA3LjAwMCAgICAgICAgICBNZWRpYW4gOjMuMDAwICAgTWVkaWFuIDoyLjAwMCAgIE1lZGlhbiA6Mi4wMDAgIFxuIE1lYW4gICA6IDYuODggICAgICAgICAgICAgICBNZWFuICAgOiA2LjU3OSAgICAgICAgICBNZWFuICAgOjMuMTc1ICAgTWVhbiAgIDoxLjU4MyAgIE1lYW4gICA6Mi4xNzIgIFxuIDNyZCBRdS46IDguMDAgICAgICAgICAgICAgICAzcmQgUXUuOiA4LjAwMCAgICAgICAgICAzcmQgUXUuOjQuMDAwICAgM3JkIFF1LjoyLjAwMCAgIDNyZCBRdS46My4wMDAgIFxuIE1heC4gICA6MTAuMDAgICAgICAgICAgICAgICBNYXguICAgOjEwLjAwMCAgICAgICAgICBNYXguICAgOjYuMDAwICAgTWF4LiAgIDoyLjAwMCAgIE1heC4gICA6NS4wMDAgIFxuIE5BJ3MgICA6MyAgICAgICAgICAgICAgICAgICBOQSdzICAgOjkgICAgICAgICAgICAgICBOQSdzICAgOjQgICAgICAgICAgICAgICAgICAgICAgIE5BJ3MgICA6NiAgICAgIFxuIEM0X0ltcG9ydGVfTWVkaW9fQ29tcHJhIEM1X05pdmVsX0VzdHVkaW9zIEM2X0luZ3Jlc29zX01lbnN1YWxlc19Ub3RhbGVzICAgIFJDMV9FZGFkICAgICAgICBSQzJfU2V4byAgICAgXG4gTWluLiAgIDowLjAwMCAgICAgICAgICAgTWluLiAgIDogMS4wMDAgICAgTWluLiAgIDoxLjAwMCAgICAgICAgICAgICAgICAgTWluLiAgIDogMC4wMCAgIE1pbi4gICA6MC4wMDAwICBcbiAxc3QgUXUuOjIuMDAwICAgICAgICAgICAxc3QgUXUuOiA1LjAwMCAgICAxc3QgUXUuOjIuMDAwICAgICAgICAgICAgICAgICAxc3QgUXUuOjI5LjUwICAgMXN0IFF1LjowLjAwMDAgIFxuIE1lZGlhbiA6NC4wMDAgICAgICAgICAgIE1lZGlhbiA6IDYuMDAwICAgIE1lZGlhbiA6My4wMDAgICAgICAgICAgICAgICAgIE1lZGlhbiA6MzkuNTAgICBNZWRpYW4gOjEuMDAwMCAgXG4gTWVhbiAgIDozLjk1NyAgICAgICAgICAgTWVhbiAgIDogNS44OTEgICAgTWVhbiAgIDozLjMzMSAgICAgICAgICAgICAgICAgTWVhbiAgIDo0MS4xNCAgIE1lYW4gICA6MC41ODI4ICBcbiAzcmQgUXUuOjUuMDAwICAgICAgICAgICAzcmQgUXUuOiA3LjAwMCAgICAzcmQgUXUuOjUuMDAwICAgICAgICAgICAgICAgICAzcmQgUXUuOjQ5LjUwICAgM3JkIFF1LjoxLjAwMDAgIFxuIE1heC4gICA6OC4wMDAgICAgICAgICAgIE1heC4gICA6MTAuMDAwICAgIE1heC4gICA6Ny4wMDAgICAgICAgICAgICAgICAgIE1heC4gICA6NjUuMDAgICBNYXguICAgOjEuMDAwMCAgXG4gTkEncyAgIDo0OSAgICAgICAgICAgICAgTkEncyAgIDo4OCAgICAgICAgTkEncyAgIDoyNjUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBSQzRfSW1wb3J0ZV9NZWRpbyAgUkM2X0luZ19tZXMgIFxuIE1pbi4gICA6ICAwLjAwICAgIE1pbi4gICA6ICAgMCAgXG4gMXN0IFF1LjogMjIuNTAgICAgMXN0IFF1LjogNjAwICBcbiBNZWRpYW4gOiA1My4wMCAgICBNZWRpYW4gOjEyNTAgIFxuIE1lYW4gICA6IDUyLjY2ICAgIE1lYW4gICA6MTQ0NSAgXG4gM3JkIFF1LjogNjguMDAgICAgM3JkIFF1LjoxNzUwICBcbiBNYXguICAgOjEyMC4wMCAgICBNYXguICAgOjQ1MDEgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4ifQ== -->
+<pre><code> Establecimiento  Pc1_Actitud     Pc1_Atencion    Pc1_Atencion_Esperas Pc1_Cliente_Habitual
+ Min.   :1.000   Min.   : 0.00   Min.   : 1.000   Min.   : 0.000       Min.   : 0.00       
+ 1st Qu.:1.000   1st Qu.: 5.00   1st Qu.: 5.000   1st Qu.: 5.000       1st Qu.: 4.00       
+ Median :2.000   Median : 7.00   Median : 6.000   Median : 6.000       Median : 5.00       
+ Mean   :2.043   Mean   : 6.37   Mean   : 5.901   Mean   : 5.973       Mean   : 5.25       
+ 3rd Qu.:3.000   3rd Qu.: 8.00   3rd Qu.: 7.000   3rd Qu.: 7.000       3rd Qu.: 7.00       
+ Max.   :3.000   Max.   :10.00   Max.   :10.000   Max.   :10.000       Max.   :10.00       
+                 NA's   :3                        NA's   :10           NA's   :52          
+ Pc1_Actitud_Servicio Pd1_Asesoramiento_Oferta Pd1_Informacion_Completa Pd1_Aspectos_Positivos_Negativos
+ Min.   : 1.000       Min.   : 1.000           Min.   : 1.000           Min.   : 1.000                  
+ 1st Qu.: 5.000       1st Qu.: 5.000           1st Qu.: 5.000           1st Qu.: 4.000                  
+ Median : 6.000       Median : 7.000           Median : 6.000           Median : 5.000                  
+ Mean   : 6.182       Mean   : 6.287           Mean   : 6.247           Mean   : 5.311                  
+ 3rd Qu.: 8.000       3rd Qu.: 8.000           3rd Qu.: 8.000           3rd Qu.: 7.000                  
+ Max.   :10.000       Max.   :10.000           Max.   :10.000           Max.   :10.000                  
+ NA's   :3            NA's   :11               NA's   :17               NA's   :69                      
+ Pe1_Experiencia_Empleados Pe1_Resolver_Consultas Pe1_Conocimiento_Gama Pe1_Dominio_Resolver_Consultas
+ Min.   : 1.00             Min.   : 1.00          Min.   : 0.000        Min.   : 1.000                
+ 1st Qu.: 5.00             1st Qu.: 5.00          1st Qu.: 5.000        1st Qu.: 5.000                
+ Median : 6.00             Median : 7.00          Median : 7.000        Median : 7.000                
+ Mean   : 6.18             Mean   : 6.44          Mean   : 6.481        Mean   : 6.364                
+ 3rd Qu.: 8.00             3rd Qu.: 8.00          3rd Qu.: 8.000        3rd Qu.: 8.000                
+ Max.   :10.00             Max.   :10.00          Max.   :10.000        Max.   :10.000                
+ NA's   :13                NA's   :18             NA's   :9             NA's   :27                    
+ Pe1_Interes_Problemas Pe1_Tiempo_Espera_Atencion Pe1_Duracion_Fila_Cajas Pe1_Rapidez_Resolver_Consultas
+ Min.   : 1.000        Min.   : 1.000             Min.   : 1.000          Min.   : 1.000                
+ 1st Qu.: 5.000        1st Qu.: 5.000             1st Qu.: 4.000          1st Qu.: 5.000                
+ Median : 7.000        Median : 6.000             Median : 6.000          Median : 6.000                
+ Mean   : 6.392        Mean   : 5.887             Mean   : 5.675          Mean   : 6.005                
+ 3rd Qu.: 8.000        3rd Qu.: 7.000             3rd Qu.: 7.000          3rd Qu.: 7.000                
+ Max.   :10.000        Max.   :10.000             Max.   :10.000          Max.   :10.000                
+ NA's   :18            NA's   :4                  NA's   :5               NA's   :40                    
+ Pe1_N_Empleados_Cajas Pe1_Tiempo_Reclamacion Pe1_Solucion_Quejas Pe1_Sencillez_Tramites
+ Min.   : 0.0          Min.   : 0.000         Min.   : 0.000      Min.   : 0.000        
+ 1st Qu.: 4.0          1st Qu.: 4.000         1st Qu.: 5.000      1st Qu.: 5.000        
+ Median : 6.0          Median : 5.000         Median : 6.000      Median : 6.000        
+ Mean   : 5.8          Mean   : 5.436         Mean   : 5.623      Mean   : 5.649        
+ 3rd Qu.: 8.0          3rd Qu.: 7.000         3rd Qu.: 7.000      3rd Qu.: 7.000        
+ Max.   :10.0          Max.   :10.000         Max.   :10.000      Max.   :10.000        
+ NA's   :14            NA's   :457            NA's   :447         NA's   :452           
+ Pf1_Competitividad_Oferta_Productos Pf1_Amplitud_Oferta_Productos Pf1_Beneficios_Compra_Habitual
+ Min.   : 0.000                      Min.   : 0.000                Min.   : 0.000                
+ 1st Qu.: 5.000                      1st Qu.: 5.000                1st Qu.: 5.000                
+ Median : 7.000                      Median : 7.000                Median : 7.000                
+ Mean   : 6.534                      Mean   : 6.447                Mean   : 6.376                
+ 3rd Qu.: 8.000                      3rd Qu.: 8.000                3rd Qu.: 8.000                
+ Max.   :10.000                      Max.   :10.000                Max.   :10.000                
+ NA's   :13                          NA's   :10                    NA's   :45                    
+ Pg1_N_Empleados_Adecuado Pg1_Cajas_Cerradas Pg1_Decoracion_Establecimiento
+ Min.   : 1.000           Min.   : 1.000     Min.   : 1.000                
+ 1st Qu.: 5.000           1st Qu.: 4.000     1st Qu.: 5.000                
+ Median : 6.000           Median : 6.000     Median : 6.000                
+ Mean   : 5.944           Mean   : 5.645     Mean   : 5.926                
+ 3rd Qu.: 7.000           3rd Qu.: 7.000     3rd Qu.: 7.000                
+ Max.   :10.000           Max.   :10.000     Max.   :10.000                
+ NA's   :7                NA's   :44         NA's   :9                     
+ Pg1_Iluminacion_Establecimiento Pg1_Climatizacion_Establecimiento Pg1_Sensacion_Orden_Limpieza
+ Min.   : 0.000                  Min.   : 1.000                    Min.   : 1.000              
+ 1st Qu.: 5.000                  1st Qu.: 5.000                    1st Qu.: 5.000              
+ Median : 7.000                  Median : 7.000                    Median : 7.000              
+ Mean   : 6.542                  Mean   : 6.521                    Mean   : 6.464              
+ 3rd Qu.: 8.000                  3rd Qu.: 8.000                    3rd Qu.: 8.000              
+ Max.   :10.000                  Max.   :10.000                    Max.   :10.000              
+ NA's   :6                       NA's   :9                         NA's   :6                   
+ Pg1_Amplitud_Establecimiento Pg1_Señalizacion_Areas Pg1_Facilidad_Identificar_Cadena
+ Min.   : 1.000               Min.   : 1.000         Min.   : 1.000                  
+ 1st Qu.: 5.000               1st Qu.: 5.000         1st Qu.: 6.000                  
+ Median : 7.000               Median : 7.000         Median : 7.000                  
+ Mean   : 6.689               Mean   : 6.211         Mean   : 6.933                  
+ 3rd Qu.: 8.000               3rd Qu.: 8.000         3rd Qu.: 8.000                  
+ Max.   :10.000               Max.   :10.000         Max.   :10.000                  
+ NA's   :4                    NA's   :6              NA's   :10                      
+ Ph1_Relacion_Calidad_Precio Ph1_Satisfaccion_Global    C1_Edad         C2_Sexo      C3_Estado_Civil
+ Min.   : 1.00               Min.   : 1.000          Min.   :1.000   Min.   :1.000   Min.   :1.000  
+ 1st Qu.: 6.00               1st Qu.: 5.000          1st Qu.:2.000   1st Qu.:1.000   1st Qu.:1.000  
+ Median : 7.00               Median : 7.000          Median :3.000   Median :2.000   Median :2.000  
+ Mean   : 6.88               Mean   : 6.579          Mean   :3.175   Mean   :1.583   Mean   :2.172  
+ 3rd Qu.: 8.00               3rd Qu.: 8.000          3rd Qu.:4.000   3rd Qu.:2.000   3rd Qu.:3.000  
+ Max.   :10.00               Max.   :10.000          Max.   :6.000   Max.   :2.000   Max.   :5.000  
+ NA's   :3                   NA's   :9               NA's   :4                       NA's   :6      
+ C4_Importe_Medio_Compra C5_Nivel_Estudios C6_Ingresos_Mensuales_Totales    RC1_Edad        RC2_Sexo     
+ Min.   :0.000           Min.   : 1.000    Min.   :1.000                 Min.   : 0.00   Min.   :0.0000  
+ 1st Qu.:2.000           1st Qu.: 5.000    1st Qu.:2.000                 1st Qu.:29.50   1st Qu.:0.0000  
+ Median :4.000           Median : 6.000    Median :3.000                 Median :39.50   Median :1.0000  
+ Mean   :3.957           Mean   : 5.891    Mean   :3.331                 Mean   :41.14   Mean   :0.5828  
+ 3rd Qu.:5.000           3rd Qu.: 7.000    3rd Qu.:5.000                 3rd Qu.:49.50   3rd Qu.:1.0000  
+ Max.   :8.000           Max.   :10.000    Max.   :7.000                 Max.   :65.00   Max.   :1.0000  
+ NA's   :49              NA's   :88        NA's   :265                                                   
+ RC4_Importe_Medio  RC6_Ing_mes  
+ Min.   :  0.00    Min.   :   0  
+ 1st Qu.: 22.50    1st Qu.: 600  
+ Median : 53.00    Median :1250  
+ Mean   : 52.66    Mean   :1445  
+ 3rd Qu.: 68.00    3rd Qu.:1750  
+ Max.   :120.00    Max.   :4501  
+                                 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGUoc3VydmV5JFBjMV9BY3RpdHVkKVxuYGBgIn0= -->
+<pre class="r"><code>table(survey$Pc1_Actitud)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4gIDAgICAxICAgMiAgIDMgICA0ICAgNSAgIDYgICA3ICAgOCAgIDkgIDEwIFxuICAxICAyMSAgNDQgIDk4IDE2NyAyOTUgMzYzIDQxOCA0MDIgMTcwICA1OCBcbiJ9 -->
+<pre><code>
+  0   1   2   3   4   5   6   7   8   9  10 
+  1  21  44  98 167 295 363 418 402 170  58 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUcmFuc2Zvcm1hcmVtb3MgbG9zIHZhbG9yZXMgMCBlbiBOQVxuIyBJbnN0YWxhbW9zIGxhIGxpYnJlcsOtYSBkcGx5ciBzaSBmdWVyYSBuZWNlc2FyaW9cbiMgSGVtb3MgZGUgYm9ycmFyIGVsIHPDrW1ib2xvICMgYW50ZXMgZGUgaW5zdGFsbC4uLi5cbiMgaW5zdGFsbC5wYWNrYWdlcygnZHBseXInKVxuIyBDYXJnYW1vcyBsYSBsaWJyZXLDrWFcbmxpYnJhcnkoZHBseXIpXG4jIENyZWFtb3MgdW5hIGZ1bmNpw7NuIHBhcmEgcmVlbXBsYXphciBsb3MgdmFsb3JlcyAwIGNvbiBOQVxuIyBMYSBmdW5jacOzbiBlcyBzaW1pbGFyIGFsIFwic2lcIiBkZSBFWENFTFxuIyBMYSBpbnRlcnByZXRhbW9zIGNvbW86IFNpIGVsIHZhbG9yIHF1ZSBwYXNhbW9zIGEgbGEgZnVuY2nDs25cbiMgZXMgMCwgc3VzdGl0dXllbG8gcG9yIE5BLCBlbiBjYXNvIGNvbnRyYXJpbyBkZWphIGVsIHZhbG9yXG5yZXBsLmYgPC0gZnVuY3Rpb24oeCkgaWZlbHNlKHglaW4lMCwgTkEsIHgpXG4jIEFwbGljYW1vcyBsYSBmdW5jacOzbiBhIHRvZGFzIGxhcyB2YXJpYWJsZXMgcXVlIGVtcGllemFuIGNvbiBcIlBcIlxuc3VydmV5IDwtIGNiaW5kKG11dGF0ZV9lYWNoKHNlbGVjdChzdXJ2ZXksIHN0YXJ0c193aXRoKFwiUFwiKSksIGZ1bnMocmVwbC5mKSksXG4gICAgICAgICAgICAgICAgc2VsZWN0KHN1cnZleSwgLXN0YXJ0c193aXRoKFwiUFwiKSkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUcmFuc2Zvcm1hcmVtb3MgbG9zIHZhbG9yZXMgMCBlbiBOQVxuIyBJbnN0YWxhbW9zIGxhIGxpYnJlcsOtYSBkcGx5ciBzaSBmdWVyYSBuZWNlc2FyaW9cbiMgSGVtb3MgZGUgYm9ycmFyIGVsIHPDrW1ib2xvICMgYW50ZXMgZGUgaW5zdGFsbC4uLi5cbiMgaW5zdGFsbC5wYWNrYWdlcygnZHBseXInKVxuIyBDYXJnYW1vcyBsYSBsaWJyZXLDrWFcbmxpYnJhcnkoZHBseXIpXG5gYGAifQ== -->
 <pre class="r"><code># Transformaremos los valores 0 en NA
 # Instalamos la librería dplyr si fuera necesario
 # Hemos de borrar el símbolo # antes de install....
 # install.packages('dplyr')
 # Cargamos la librería
-library(dplyr)
-# Creamos una función para reemplazar los valores 0 con NA
+library(dplyr)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog46S847ixZHBseXLjpLzjuLJcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDjpLzjuLFwYWNrYWdlOnN0YXRz46S847iyOlxuXG4gICAgZmlsdGVyLCBsYWdcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDjpLzjuLFwYWNrYWdlOmJhc2XjpLzjuLI6XG5cbiAgICBpbnRlcnNlY3QsIHNldGRpZmYsIHNldGVxdWFsLCB1bmlvblxuIn0= -->
+<pre><code>
+Attaching package: 㤼㸱dplyr㤼㸲
+
+The following objects are masked from 㤼㸱package:stats㤼㸲:
+
+    filter, lag
+
+The following objects are masked from 㤼㸱package:base㤼㸲:
+
+    intersect, setdiff, setequal, union</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDcmVhbW9zIHVuYSBmdW5jacOzbiBwYXJhIHJlZW1wbGF6YXIgbG9zIHZhbG9yZXMgMCBjb24gTkFcbiMgTGEgZnVuY2nDs24gZXMgc2ltaWxhciBhbCBcInNpXCIgZGUgRVhDRUxcbiMgTGEgaW50ZXJwcmV0YW1vcyBjb21vOiBTaSBlbCB2YWxvciBxdWUgcGFzYW1vcyBhIGxhIGZ1bmNpw7NuXG4jIGVzIDAsIHN1c3RpdHV5ZWxvIHBvciBOQSwgZW4gY2FzbyBjb250cmFyaW8gZGVqYSBlbCB2YWxvclxucmVwbC5mIDwtIGZ1bmN0aW9uKHgpIGlmZWxzZSh4JWluJTAsIE5BLCB4KVxuIyBBcGxpY2Ftb3MgbGEgZnVuY2nDs24gYSB0b2RhcyBsYXMgdmFyaWFibGVzIHF1ZSBlbXBpZXphbiBjb24gXCJQXCJcbnN1cnZleSA8LSBjYmluZChtdXRhdGVfZWFjaChzZWxlY3Qoc3VydmV5LCBzdGFydHNfd2l0aChcIlBcIikpLCBmdW5zKHJlcGwuZikpLFxuICAgICAgICAgICAgICAgIHNlbGVjdChzdXJ2ZXksIC1zdGFydHNfd2l0aChcIlBcIikpKVxuYGBgIn0= -->
+<pre class="r"><code># Creamos una función para reemplazar los valores 0 con NA
 # La función es similar al &quot;si&quot; de EXCEL
 # La interpretamos como: Si el valor que pasamos a la función
 # es 0, sustituyelo por NA, en caso contrario deja el valor
