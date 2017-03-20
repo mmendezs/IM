@@ -1,5 +1,7 @@
 library(readr)
-survey <- read_delim("C:/Users/Mariano/Dropbox/IM/IM/survey.csv",
+library(ggplot2)
+library(dplyr)
+survey <- read_delim("survey.csv",
                      ";", escape_double = FALSE, trim_ws = TRUE)
 
 survey$Establecimiento <- factor(survey$Establecimiento, labels = c('carrefour','dia','mercadona'))
@@ -22,3 +24,15 @@ boxplot(survey$Ph1_Satisfaccion_Global~survey$C1_Edad)
 boxplot(survey$Ph1_Satisfaccion_Global~survey$C3_Estado_Civil)
 boxplot(survey$Ph1_Satisfaccion_Global~survey$C4_Importe_Medio_Compra)
 boxplot(survey$Ph1_Satisfaccion_Global~survey$C5_Ingresos_Mensuales_Totales)
+
+par(mfrow=c(1,1))
+
+boxplot((survey$Ph1_Satisfaccion_Global~survey$Establecimiento))
+
+summarise(survey,Establecimiento,Ph1_Satisfaccion_Global)
+
+table(survey$Ph1_Satisfaccion_Global,survey$Establecimiento)/colSums(survey$Ph1_Satisfaccion_Global)
+
+dia <- filter(survey, Establecimiento=='dia')
+carrefour <- filter(survey, Establecimiento=='carrefour')
+mercadona <- filter(survey, Establecimiento=='mercadona')
