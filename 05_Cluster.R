@@ -3,6 +3,7 @@ library(ggplot2)
 library(scales)
 library(reshape2)
 library(cluster)
+library(factoextra)
 
 
 survey <- read.delim("survey.csv",sep = ';')
@@ -16,6 +17,10 @@ summary(survey)
 survey <- survey %>%
   dplyr::select(-starts_with('P'), which(colSums(is.na(.)) < 41)) %>% 
   select(Establecimiento, starts_with('P'), starts_with('C'))
+
+## Ajustar
+# Replace NA with median
+survey[] <- lapply(survey, function(x) ifelse(is.na(x), median(x, na.rm = TRUE), x))
 
 survey$RC1_Edad <- dplyr::recode(survey$C1_Edad, 21, 30, 40, 50, 60, 65)
 survey$RC2_Sexo <- recode(survey$C2_Sexo, 0, 1)
@@ -57,6 +62,10 @@ as.matrix(dia_dist)[1:4, 1:4]   # distances of first 4 observations
 dia_segment <- hclust(dia_dist, method = 'complete')
 plot(dia_segment)
 
+dia_segment <- hclust(dia_dist, method = 'ward.D2')
+plot(dia_segment)
+
+
 # Segmento
 plot(cut(as.dendrogram(dia_segment), h=0.5)$lower[[1]])
 # cophenetic correlation coefficient is a measure of how well 
@@ -87,59 +96,50 @@ plot(jitter(dia$RC2_Sexo) ~
 
 
 
-
-
 # Kmeans
 
 #### Cluster
 #Seleccionamos variables p y le quitamos los NA
-dia_no_NA <- dia %>% 
-  select(Establecimiento, starts_with('P')) %>% 
-  na.omit()
+dia_no_NA <- dia %>% na.omit()
 
-dia_kmeans <- kmeans(dia_no_NA[,-1],4)
+dia_kmeans <- kmeans(select(dia_no_NA, starts_with('P')),4)
 
 table(dia_kmeans$cluster)
 
-aggregate(select(dia_no_NA, -Establecimiento), 
+aggregate(select(dia_no_NA, -Establecimiento, -starts_with('C')), 
           by = list(dia_kmeans$cluster), FUN=mean, na.rm=TRUE)
 
-
-plot(jitter(dia_no_NA[[27]]) ~ jitter(dia_no_NA[[28]]), col = dia_kmeans$cluster)
 
 ggplot(dia_no_NA,
        aes(Ph1_Relacion_Calidad_Precio, Ph1_Satisfaccion_Global,
            color = factor(dia_kmeans$cluster))) +
-  geom_jitter()
+  geom_jitter() +
+  theme(legend.position="bottom",legend.title=element_blank())
 
 
-dia_kmeans <- kmeans(na.omit(
-  select(dia, -Establecimiento,starts_with('P'))), 4)
+ggplot(dia_no_NA,
+       aes(C2_Sexo, Ph1_Satisfaccion_Global,
+           color = factor(dia_kmeans$cluster))) +
+  geom_jitter() +
+  theme(legend.position="bottom",legend.title=element_blank())
 
 
-aggregate(na.omit(select(dia, -Establecimiento)), by = list(dia_kmeans$cluster), FUN=mean, na.rm=TRUE)
+ggplot(dia_no_NA,
+       aes(C4_Compra_Media, Ph1_Satisfaccion_Global,
+           color = factor(dia_kmeans$cluster))) +
+  geom_jitter() +
+  theme(legend.position="bottom",legend.title=element_blank())
 
 
-dia$cluster_kmeans <- dia_kmeans$cluster
-
-plot(dia[,34:35], col = dia_kmeans$cluster)
-
-plot(survey_clust[,34:35], col = survey_clust$Establecimiento)
-
-ggplot(survey_clust,
-       aes(Ph1_Relacion_Calidad_Precio, Ph1_Satisfaccion_Global, color = factor(clust_result$cluster))) +
-  geom_point()
-
-ggplot(survey_clust,
-       aes(Ph1_Relacion_Calidad_Precio, Ph1_Satisfaccion_Global, color = Establecimiento)) +
-  geom_point()
-
+cluster::clusplot(select(dia_no_NA, starts_with('P')),
+                  dia_kmeans$cluster, color=TRUE, shade=TRUE, 
+                  labels=4, lines=0, main="K-means cluster plot")
 
 
 
-
-
-
+factoextra::fviz_cluster(dia_kmeans, data = select(dia_no_NA, starts_with('P')),
+                         ellipse = TRUE) +
+  theme_minimal()
 
 
 

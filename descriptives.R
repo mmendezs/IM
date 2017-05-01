@@ -169,8 +169,7 @@ sumario <- survey %>%
   group_by(Establecimiento) %>% 
   summarise_each(funs(mean(., na.rm = TRUE),
                       sd(., na.rm = TRUE),
-                      median(., na.rm = TRUE),
-                      getmode(.)),
+                      median(., na.rm = TRUE)),
                  starts_with('P'))
 
 sumario <- data.frame(t(sumario))
