@@ -405,28 +405,6 @@ gridExtra::grid.arrange((dia_NPS_plot +
                         mercadona_NPS_plot, nrow = 3, ncol = 1)
 
 
-#### Cluster
-#Seleccionamos variables p y le quitamos los NA
-survey_clust <- survey %>% 
-  select(Establecimiento, starts_with('P')) %>% 
-  na.omit()
-
-clust_result <- kmeans(survey_clust[,-1],3)
-
-table(survey_clust$Establecimiento, clust_result$cluster)
-
-plot(survey_clust[,34:35], col = clust_result$cluster)
-
-plot(survey_clust[,34:35], col = survey_clust$Establecimiento)
-
-ggplot(survey_clust,
-       aes(Ph1_Relacion_Calidad_Precio, Ph1_Satisfaccion_Global, color = factor(clust_result$cluster))) +
-  geom_point()
-
-ggplot(survey_clust,
-       aes(Ph1_Relacion_Calidad_Precio, Ph1_Satisfaccion_Global, color = Establecimiento)) +
-  geom_point()
-
 
 # ###
 # # Sacar nombres de las variables de las filas
@@ -628,7 +606,7 @@ survey %>%
 # ggplot(na.omit(survey), aes(C1_Edad,Ph1_Satisfaccion_Global)) +
 #   geom_boxplot(aes(fill = Establecimiento)) +
 #   theme(legend.position="bottom",legend.title=element_blank()) +
-#   ggtitle('Satisfacción global') +
+#   ggtitle('Satisfacción global') +.
 #   labs(x = 'Edad', y = 'Valoración de 1 a 10')
 # 
 # # Relación calidad precio
