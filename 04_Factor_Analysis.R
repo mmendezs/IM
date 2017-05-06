@@ -1,16 +1,12 @@
-# install.packages("FactoMineR")
-# install.packages('factoextra')
 
-
-library(dplyr)
-library(ggplot2)
 #library(scales)
 #library(reshape2)
 #library(stringr)
 # library(FactoMineR)
 # library(factoextra)
+library(dplyr)
+library(ggplot2)
 library(psych)
-library(MASS)
 
 survey <- read.delim("survey.csv",sep = ';')
 
@@ -54,57 +50,79 @@ dia <- filter(survey, Establecimiento=='dia')
 carrefour <- filter(survey, Establecimiento=='carrefour')
 mercadona <- filter(survey, Establecimiento=='mercadona')
 
-# Rotación
+## psych
+# Exploratorio
 
-seed(123)
-sim_data <-  as.data.frame(MASS::mvrnorm(
-  n=100, mu=c(0, 0), Sigma=matrix(c(1, 0.8, 0.8, 1), nrow=2), empirical=TRUE))
+#psych::scree(select(survey, starts_with('P')), pc = TRUE) # gráfico feo
+# Hacemos el análisis Kaiser Meyer Olsen
+survey_KMO <-psych::KMO(select(survey, starts_with('P')))
+# Valor KMO
+survey_KMO$MSA
+# PCA con todas las columnas para elegir cuantos factores y varianza explicada
+survey_principal <- psych::principal(select(survey, starts_with('P')),
+  nfactors = ncol(select(survey, starts_with('P'))), rotate = 'none')
+survey_principal
+# Elegimos 4 factores sin rotar
+# PCA con todas las columnas para elegir cuantos factores y varianza explicada
+survey_principal <- psych::principal(select(survey, starts_with('P')),
+  nfactors = 4, rotate = 'none')
+# Estudiamos las comunalidades
+survey_principal$communality
+# Extraemos las puntuaciones
+survey_principal_cargas <- as.data.frame(unclass(survey_principal$loadings))
+# Añadimos columnas con los nombres de las variables
+survey_principal_cargas$variables <- rownames(survey_principal_cargas)
+# Reordenamos las columnas
+survey_principal_cargas <- select(survey_principal_cargas, variables, starts_with('P'))
+# Reordenamos las puntuaciones en base a PC1
+survey_principal_cargas <- arrange(survey_principal_cargas, -PC1)
 
-names(sim_data) <- c('x', 'y')
+print(survey_principal_cargas, digits = 2)
 
-line1 <- data.frame(x = seq(from = -2, to = 2, by = 1/100),
-                    y = seq(from = -2, to = 2, by = 1/100))
-line2 <- data.frame(x = seq(from = -1, to = 1, by = 1/100),
-                    y = -seq(from = -1, to = 1, by = 1/100))
+# Cogemos los scores de cada individuo
+survey_principal_scores <- as.data.frame(unclass(survey_principal$scores))
+# Les incluimos el establecimiento
+survey_principal_scores$Establecimiento <- survey$Establecimiento
+# Agrupamos los scores por establecimiento
 
-ggplot(sim_data, aes(x, y)) +
-  geom_point() +
-  geom_line(data = line1, aes(x, y)) +
-  geom_line(data = line2, aes(x, y))
+survey_principal_scores <- survey_principal_scores %>% 
+  group_by(Establecimiento)
 
-rotate <- function(df, degree) {
-  dfr <- df
-  degree <- pi * degree / 180
-  l <- sqrt(df$start1^2 + df$start2^2)
-  teta <- atan(df$start2 / df$start1)
-  dfr$start1 <- round(l * cos(teta - degree))
-  dfr$start2 <- round(l * sin(teta - degree))
-  return(dfr)
-}
+ggplot(data = survey_principal_scores, aes(PC1, PC2)) +
+  geom_hline(yintercept = 0, colour = "gray70") +
+  geom_vline(xintercept = 0, colour = "gray70") +
+  geom_point(aes(colour = factor(Establecimiento)), alpha = 0.7) +
+  geom_density2d(colour = "gray80") +
+  geom_text(data = survey_principal_cargas, 
+            aes(PC1, PC2, label = variables),check_overlap = TRUE) +
+  theme(legend.position="bottom",legend.direction="horizontal") +
+  theme(legend.title = element_blank()) +
+  ggtitle("Análisis de Correspondecias Múltiple, incluyendo individuos") +
+  scale_colour_discrete(name = "Variable")
 
-sim_data1 <- rotate(sim_data, -90)
+# ROTAMOS
 
-sim_data1 <- sim_data
-degree <- 45
-degree <- pi * degree / 180
-l <- sqrt(sim_data1$x^2 + sim_data$y^2)
-teta <- atan(sim_data$y / sim_data1$x)
-sim_data1$x <- l * cos(teta - degree)
-sim_data1$y <- l * sin(teta - degree)
+survey_principal_rot <- psych::principal(select(survey, starts_with('P')),
+                                     nfactors = 4, rotate = 'varimax')
 
-ggplot(sim_data1, aes(x, y)) +
-  geom_point() +
-  geom_line(data = line1, aes(x, y)) +
-  geom_line(data = line2, aes(x, y))
 
-factor.rotate(sim_data, 45, col1=sim_data$x, col2=sim_data$y, plot=TRUE)
+survey_principal_cargas_rot <- as.data.frame(unclass(survey_principal_rot$loadings))
+survey_principal_cargas_rot$variables <- rownames(survey_principal_cargas_rot)
+survey_principal_cargas_rot <- select(survey_principal_cargas_rot, variables, starts_with('R'))
+# Reordenamos en base a PC1
+survey_principal_cargas_rot <- arrange(survey_principal_cargas_rot, -RC1)
 
-data(Harman23.cor)
-f2 <- fa(Harman23.cor$cov,2,rotate="none")
-op <- par(mfrow=c(1,2))
-cluster.plot(f2,xlim=c(-1,1),ylim=c(-1,1),title="Unrotated ")
-f2r <- factor.rotate(f2,-33,plot=TRUE,xlim=c(-1,1),ylim=c(-1,1),title="rotated -33 degrees")
-op <- par(mfrow=c(1,1))
+##### Aquí nos quedamos....
+
+a <- survey_principal_cargas_rot
+a[a[]<0.4] <- 0
+
+
+print(survey_principal_cargas_rot, digits = 2)
+
+
+set.seed(1234)
+
 
 
 
@@ -116,11 +134,9 @@ survey_Base_pr <- prcomp(select(survey, starts_with('P')),4, scale = FALSE)
 screeplot(survey_Base_pr) # Variance
 screeplot(survey_Base_prin) # std deviation
 
-psych::scree(select(survey, starts_with('P'))) # std deviation
-psych::KMO(select(survey, starts_with('P')))
 psych::fa.sort(survey_principal)
 
-psych::principal(select(survey, starts_with('P')), nfactors = 4, ) 
+ 
 
 nfactors(select(survey, starts_with('P')), n= 20, rotate = 'varimax')
 
@@ -136,24 +152,6 @@ survey_principal$scores
 a <- print(survey_principal)
 round(a$Vaccounted,2)
 cor(survey_principal$scores) 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## FactoMineR
 # PCA All
 survey_pca <- PCA(select(survey, starts_with('P')))
@@ -204,6 +202,58 @@ ggplot(mercadona, aes(Ph1_Satisfaccion_Global, RC4_Compra_Media)) +
   geom_smooth(method=lm,   # Add linear regression lines
               se=FALSE,    # Don't add shaded confidence region
               fullrange=TRUE) # Extend regression lines
+
+
+# Rotación
+seed(123)
+sim_data <-  as.data.frame(MASS::mvrnorm(
+  n=100, mu=c(0, 0), Sigma=matrix(c(1, 0.8, 0.8, 1), nrow=2), empirical=TRUE))
+
+names(sim_data) <- c('x', 'y')
+
+line1 <- data.frame(x = seq(from = -2, to = 2, by = 1/100),
+                    y = seq(from = -2, to = 2, by = 1/100))
+line2 <- data.frame(x = seq(from = -1, to = 1, by = 1/100),
+                    y = -seq(from = -1, to = 1, by = 1/100))
+
+ggplot(sim_data, aes(x, y)) +
+  geom_point() +
+  geom_line(data = line1, aes(x, y)) +
+  geom_line(data = line2, aes(x, y))
+
+rotate <- function(df, degree) {
+  dfr <- df
+  degree <- pi * degree / 180
+  l <- sqrt(df$start1^2 + df$start2^2)
+  teta <- atan(df$start2 / df$start1)
+  dfr$start1 <- round(l * cos(teta - degree))
+  dfr$start2 <- round(l * sin(teta - degree))
+  return(dfr)
+}
+
+sim_data1 <- rotate(sim_data, -90)
+
+sim_data1 <- sim_data
+degree <- 45
+degree <- pi * degree / 180
+l <- sqrt(sim_data1$x^2 + sim_data$y^2)
+teta <- atan(sim_data$y / sim_data1$x)
+sim_data1$x <- l * cos(teta - degree)
+sim_data1$y <- l * sin(teta - degree)
+
+ggplot(sim_data1, aes(x, y)) +
+  geom_point() +
+  geom_line(data = line1, aes(x, y)) +
+  geom_line(data = line2, aes(x, y))
+
+factor.rotate(sim_data, 45, col1=sim_data$x, col2=sim_data$y, plot=TRUE)
+
+data(Harman23.cor)
+f2 <- fa(Harman23.cor$cov,2,rotate="none")
+op <- par(mfrow=c(1,2))
+cluster.plot(f2,xlim=c(-1,1),ylim=c(-1,1),title="Unrotated ")
+f2r <- factor.rotate(f2,-33,plot=TRUE,xlim=c(-1,1),ylim=c(-1,1),title="rotated -33 degrees")
+op <- par(mfrow=c(1,1))
 
 
 
