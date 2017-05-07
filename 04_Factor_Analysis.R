@@ -1,12 +1,8 @@
 
-#library(scales)
-#library(reshape2)
-#library(stringr)
-# library(FactoMineR)
-# library(factoextra)
 library(dplyr)
 library(ggplot2)
 library(psych)
+library(gridExtra)
 
 survey <- read.delim("survey.csv",sep = ';')
 
@@ -61,33 +57,27 @@ survey_KMO$MSA
 # PCA con todas las columnas para elegir cuantos factores y varianza explicada
 survey_principal <- psych::principal(select(survey, starts_with('P')),
   nfactors = ncol(select(survey, starts_with('P'))), rotate = 'none')
-survey_principal
+survey_principal$loadings
 # Elegimos 4 factores sin rotar
 # PCA con todas las columnas para elegir cuantos factores y varianza explicada
 survey_principal <- psych::principal(select(survey, starts_with('P')),
   nfactors = 4, rotate = 'none')
 # Estudiamos las comunalidades
 survey_principal$communality
+print(survey_principal$loadings, cutoff = 0.4, digits = 2)
 # Extraemos las puntuaciones
 survey_principal_cargas <- as.data.frame(unclass(survey_principal$loadings))
 # Añadimos columnas con los nombres de las variables
 survey_principal_cargas$variables <- rownames(survey_principal_cargas)
 # Reordenamos las columnas
 survey_principal_cargas <- select(survey_principal_cargas, variables, starts_with('P'))
-# Reordenamos las puntuaciones en base a PC1
-survey_principal_cargas <- arrange(survey_principal_cargas, -PC1)
-
-print(survey_principal_cargas, digits = 2)
 
 # Cogemos los scores de cada individuo
 survey_principal_scores <- as.data.frame(unclass(survey_principal$scores))
 # Les incluimos el establecimiento
 survey_principal_scores$Establecimiento <- survey$Establecimiento
-# Agrupamos los scores por establecimiento
 
-survey_principal_scores <- survey_principal_scores %>% 
-  group_by(Establecimiento)
-
+# Gráfico sin rotar
 ggplot(data = survey_principal_scores, aes(PC1, PC2)) +
   geom_hline(yintercept = 0, colour = "gray70") +
   geom_vline(xintercept = 0, colour = "gray70") +
@@ -97,31 +87,175 @@ ggplot(data = survey_principal_scores, aes(PC1, PC2)) +
             aes(PC1, PC2, label = variables),check_overlap = TRUE) +
   theme(legend.position="bottom",legend.direction="horizontal") +
   theme(legend.title = element_blank()) +
-  ggtitle("Análisis de Correspondecias Múltiple, incluyendo individuos") +
+  ggtitle("Análisis Componentes por centros, incluyendo individuos") +
   scale_colour_discrete(name = "Variable")
 
 # ROTAMOS
-
 survey_principal_rot <- psych::principal(select(survey, starts_with('P')),
-                                     nfactors = 4, rotate = 'varimax')
-
-
+  nfactors = 4, rotate = 'varimax')
+# Vemos los principales
+print(survey_principal_rot$loadings, cutoff = 0.4, digits = 2)
 survey_principal_cargas_rot <- as.data.frame(unclass(survey_principal_rot$loadings))
 survey_principal_cargas_rot$variables <- rownames(survey_principal_cargas_rot)
 survey_principal_cargas_rot <- select(survey_principal_cargas_rot, variables, starts_with('R'))
-# Reordenamos en base a PC1
-survey_principal_cargas_rot <- arrange(survey_principal_cargas_rot, -RC1)
 
-##### Aquí nos quedamos....
+# Cogemos los scores de cada individuo
+survey_principal_scores_rot <- as.data.frame(unclass(survey_principal_rot$scores))
+# Les incluimos el establecimiento
+survey_principal_scores_rot$Establecimiento <- survey$Establecimiento
+# Gráfico Rotado
+ggplot(data = survey_principal_scores_rot, aes(RC1, RC2)) +
+  geom_hline(yintercept = 0, colour = "gray70") +
+  geom_vline(xintercept = 0, colour = "gray70") +
+  geom_point(aes(colour = factor(Establecimiento)), alpha = 0.4) +
+  geom_density2d(colour = "gray80") +
+  geom_text(data = survey_principal_cargas_rot, size = 3, 
+            aes(RC1, RC2, label = variables), check_overlap = TRUE) +
+  theme(legend.position="bottom",legend.direction="horizontal") +
+  theme(legend.title = element_blank()) +
+  ggtitle("Análisis Componentes por centros, incluyendo individuos") +
+  scale_colour_discrete(name = "Variable")
 
-a <- survey_principal_cargas_rot
-a[a[]<0.4] <- 0
+
+survey_principal_scores_rot <- data.frame(survey_principal_scores_rot)
+# Creamos variables temporales
+a <- select(survey_principal_scores_rot, x = RC1, y = RC2, Establecimiento)
+a$factor <- 'Empleados y Establecimiento'
+b <- select(survey_principal_scores_rot, x = RC1, y = RC3, Establecimiento)
+b$factor <- 'Empleados y Tiempos'
+c <- select(survey_principal_scores_rot, x = RC1, y = RC4, Establecimiento)
+c$factor <- 'Empleados y Gama Productos'
+d <- dplyr::bind_rows(a, b, c)
+# Gráfico de los 3 centros
+ggplot(data = d, aes(x, y)) +
+  geom_hline(yintercept = 0, colour = "gray70") +
+  geom_vline(xintercept = 0, colour = "gray70") +
+  geom_point(aes(colour = factor(Establecimiento)), alpha = 0.4) +
+  geom_density2d(colour = "gray80") +
+  facet_grid(~ factor) +
+  theme(legend.position="bottom",legend.direction="horizontal") +
+  theme(legend.title = element_blank()) +
+  ggtitle("Análisis Componentes por centros, incluyendo individuos") +
+  scale_colour_discrete(name = "Variable")
+
+## Día con 4 factores
+# Hacemos el análisis Kaiser Meyer Olsen
+dia_KMO <-psych::KMO(select(dia, starts_with('P')))
+# Valor KMO
+dia_KMO$MSA
+
+# ROTAMOS
+dia_principal_rot <- psych::principal(select(dia, starts_with('P')),
+                                         nfactors = 4, rotate = 'varimax')
+# Estudiamos las comunalidades
+dia_principal_rot$communality
+# Vemos los principales
+print(dia_principal_rot$loadings, sort = TRUE ,cutoff = 0.4, digits = 2)
+dia_principal_cargas_rot <- as.data.frame(unclass(dia_principal_rot$loadings))
+dia_principal_cargas_rot$variables <- rownames(dia_principal_cargas_rot)
+dia_principal_cargas_rot <- select(dia_principal_cargas_rot, variables, starts_with('R'))
+
+# Cogemos los scores de cada individuo
+dia_principal_scores_rot <- as.data.frame(unclass(dia_principal_rot$scores))
+# Les incluimos el establecimiento
+dia_principal_scores_rot$Establecimiento <- dia$Establecimiento
+# Agrupamos los scores por establecimiento
+
+ggplot(data = dia_principal_scores_rot, aes(RC1, RC2)) +
+  geom_hline(yintercept = 0, colour = "gray70") +
+  geom_vline(xintercept = 0, colour = "gray70") +
+  geom_point(colour = 'green', alpha = 0.2) +
+  geom_density2d(colour = "gray80") +
+  geom_text(data = dia_principal_cargas_rot, size = 3,
+            aes(RC1, RC2, label = variables), check_overlap = TRUE) +
+  theme(legend.position="bottom",legend.direction="horizontal") +
+  theme(legend.title = element_blank()) +
+  ggtitle("Análisis Componentes por centros, incluyendo individuos") +
+  scale_colour_discrete(name = "Variable")
 
 
-print(survey_principal_cargas_rot, digits = 2)
+## Carrefour con 4 factores
+# Hacemos el análisis Kaiser Meyer Olsen
+carrefour_KMO <-psych::KMO(select(carrefour, starts_with('P')))
+# Valor KMO
+carrefour_KMO$MSA
+
+# ROTAMOS
+carrefour_principal_rot <- psych::principal(select(carrefour, starts_with('P')),
+                                      nfactors = 4, rotate = 'varimax')
+# Estudiamos las comunalidades
+carrefour_principal_rot$communality
+# Vemos los principales
+print(carrefour_principal_rot$loadings, sort = TRUE ,cutoff = 0.4, digits = 2)
+carrefour_principal_cargas_rot <- as.data.frame(unclass(carrefour_principal_rot$loadings))
+carrefour_principal_cargas_rot$variables <- rownames(carrefour_principal_cargas_rot)
+carrefour_principal_cargas_rot <- select(carrefour_principal_cargas_rot, variables, starts_with('R'))
+
+# Cogemos los scores de cada individuo
+carrefour_principal_scores_rot <- as.data.frame(unclass(carrefour_principal_rot$scores))
+# Les incluimos el establecimiento
+carrefour_principal_scores_rot$Establecimiento <- carrefour$Establecimiento
+# Agrupamos los scores por establecimiento
+
+ggplot(data = carrefour_principal_scores_rot, aes(RC1, RC2)) +
+  geom_hline(yintercept = 0, colour = "gray70") +
+  geom_vline(xintercept = 0, colour = "gray70") +
+  geom_point(colour = 'green', alpha = 0.2) +
+  geom_density2d(colour = "gray80") +
+  geom_text(data = carrefour_principal_cargas_rot, size = 3,
+            aes(RC1, RC2, label = variables), check_overlap = TRUE) +
+  theme(legend.position="bottom",legend.direction="horizontal") +
+  theme(legend.title = element_blank()) +
+  ggtitle("Análisis Componentes por centros, incluyendo individuos") +
+  scale_colour_discrete(name = "Variable")
 
 
-set.seed(1234)
+## Mercadona con 4 factores
+# Hacemos el análisis Kaiser Meyer Olsen
+mercadona_KMO <-psych::KMO(select(mercadona, starts_with('P')))
+# Valor KMO
+mercadona_KMO$MSA
+
+# ROTAMOS
+mercadona_principal_rot <- psych::principal(select(mercadona, starts_with('P')),
+                                            nfactors = 4, rotate = 'varimax')
+# Estudiamos las comunalidades
+mercadona_principal_rot$communality
+# Vemos los principales
+print(mercadona_principal_rot$loadings, sort = TRUE ,cutoff = 0.4, digits = 2)
+mercadona_principal_cargas_rot <- as.data.frame(unclass(mercadona_principal_rot$loadings))
+mercadona_principal_cargas_rot$variables <- rownames(mercadona_principal_cargas_rot)
+mercadona_principal_cargas_rot <- select(mercadona_principal_cargas_rot, variables, starts_with('R'))
+
+# Cogemos los scores de cada individuo
+mercadona_principal_scores_rot <- as.data.frame(unclass(mercadona_principal_rot$scores))
+# Les incluimos el establecimiento
+mercadona_principal_scores_rot$Establecimiento <- mercadona$Establecimiento
+# Agrupamos los scores por establecimiento
+
+ggplot(data = mercadona_principal_scores_rot, aes(RC1, RC2)) +
+  geom_hline(yintercept = 0, colour = "gray70") +
+  geom_vline(xintercept = 0, colour = "gray70") +
+  geom_point(colour = 'green', alpha = 0.2) +
+  geom_density2d(colour = "gray80") +
+  geom_text(data = mercadona_principal_cargas_rot, size = 3,
+            aes(RC1, RC2, label = variables), check_overlap = TRUE) +
+  theme(legend.position="bottom",legend.direction="horizontal") +
+  theme(legend.title = element_blank()) +
+  ggtitle("Análisis Componentes por centros, incluyendo individuos") +
+  scale_colour_discrete(name = "Variable")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
