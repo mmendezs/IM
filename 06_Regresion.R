@@ -1,5 +1,11 @@
+
+library(MASS) # para step regression
 library(dplyr)
 library(ggplot2)
+library(scales)
+#library(caret) no vale sólo usa abs(t)
+library(relaimpo)
+
 
 survey <- read.delim("survey.csv",sep = ';')
 survey <- survey %>%
@@ -38,34 +44,79 @@ dia <- filter(survey, Establecimiento=='dia')
 carrefour <- filter(survey, Establecimiento=='carrefour')
 mercadona <- filter(survey, Establecimiento=='mercadona')
 
-
-survey_indep <- select(survey, starts_with('P'), -Ph1_Satisfaccion_Global)
-a <- colnames(survey_indep)
-
-X <- c(a)
+# Todos los establecimientos
+# Creamos la fórmula
 f <- as.formula(
-  paste('Ph1_Satisfaccion_Global ~', '0 +',
+  paste('Ph1_Satisfaccion_Global ~',
         paste(colnames(select(survey, starts_with('P'), -Ph1_Satisfaccion_Global))
-                       , collapse='+')))
+              , collapse='+')))
 
-survey_fit <- lm( f , data= survey)
+survey_fit <- lm(f, data= survey)
+
+
+
 summary(survey_fit)
+# Realizamos la regresión en pasos con el criterio de Aqaique
+survey_fit_step <- MASS::stepAIC(survey_fit, direction = 'both')
+survey_fit_step$anova
+
+# Devuelve un modelo de corta pega y repetimos regresión
+survey_fit_after_step <- lm(formula(survey_fit_step), data = survey)
+# sale un modelo bastante bien
+summary(survey_fit_after_step)
+# Importancia relativa
+a <- relaimpo::calc.relimp(survey_fit_after_step)
+
+# Dia
+# f <- as.formula(
+#   paste('Ph1_Satisfaccion_Global ~',
+#         paste(colnames(select(survey, starts_with('P'), -Ph1_Satisfaccion_Global))
+#               , collapse='+')))
+
+dia_fit <- lm( as.formula(
+  paste('Ph1_Satisfaccion_Global ~',
+        paste(colnames(select(survey, starts_with('P'), -Ph1_Satisfaccion_Global))
+              , collapse='+'))) , data= dia)
+
+summary(dia_fit)
+# Realizamos la regresión en pasos con el criterio de Akaike
+dia_fit_step <- MASS::stepAIC(survey_fit, direction = 'both')
+dia_fit_step$anova
+summary(dia_fit_step)
+
+# Para extraer la formula del step fit
+
+dia_fit_after_step <- lm(data = dia, formula(dia_fit_step))
+
+summary(dia_fit_after_step)
+a <- relaimpo::calc.relimp(dia_fit_after_step)
+plot(a)
+
+b <- data.frame(a$lmg)
+b$variables <- rownames(b)
+
+ggplot(b, aes(reorder(as.factor(variables), a.lmg), a.lmg)) +
+  geom_bar(stat = 'identity', fill = 'blue') +
+  scale_y_continuous(labels = scales::percent) +
+  coord_flip()
+
+#gráfico con predicción
+dia$model <- predict(b, newdata = dia)
+
+ggplot(dia) +
+  geom_jitter(aes(x=Ph1_Satisfaccion_Global, y =model)) 
 
 
+# Super bueno, explica la explicación del R2
+c <- caret::varImp(dia_fit_step, scale=TRUE)
+cumsum(c)
+# dividimos por R2 pendiente entender que es varIMP
+d <- c/sum(c)*100
+cumsum(d)
+par(mfrow = c(2, 2))
+plot(dia_fit_step)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+par(mfrow = c(1, 1))
 
 
 
