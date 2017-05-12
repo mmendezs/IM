@@ -44,34 +44,39 @@ dia <- filter(survey, Establecimiento=='dia')
 carrefour <- filter(survey, Establecimiento=='carrefour')
 mercadona <- filter(survey, Establecimiento=='mercadona')
 
-# Todos los establecimientos
-# Creamos la fórmula
-f <- as.formula(
+# Todos los establecimientos y Satisfacción Global (SG)
+survey_fit_SG <- lm(as.formula(
   paste('Ph1_Satisfaccion_Global ~',
         paste(colnames(select(survey, starts_with('P'), -Ph1_Satisfaccion_Global))
-              , collapse='+')))
-
-survey_fit <- lm(f, data= survey)
-
-
-
-summary(survey_fit)
-# Realizamos la regresión en pasos con el criterio de Aqaique
-survey_fit_step <- MASS::stepAIC(survey_fit, direction = 'both')
-survey_fit_step$anova
-
-# Devuelve un modelo de corta pega y repetimos regresión
-survey_fit_after_step <- lm(formula(survey_fit_step), data = survey)
+              , collapse='+'))), data= survey)
+summary(survey_fit_SG)
+# Realizamos la regresión en pasos con el criterio de Akaike
+survey_fit_SG_step <- MASS::stepAIC(survey_fit_SG, direction = 'both')
+# Para ver los AIC
+# survey_fit_SG_step$anova
+summary(survey_fit_SG_step)
+# Si queremos extraer la fórmula
+# survey_fit_SG_after_step <- lm(formula(survey_fit_SG_step), data = survey)
 # sale un modelo bastante bien
-summary(survey_fit_after_step)
+# summary(survey_fit_SG_after_step)
 # Importancia relativa
-a <- relaimpo::calc.relimp(survey_fit_after_step)
+
+# Calculamos Relative Importance
+survey_fit_SG_step_relaimp <- data.frame(relaimp = relaimpo::calc.relimp(survey_fit_SG_step)$lmg)
+survey_fit_SG_step_relaimp$variables <- rownames(survey_fit_SG_step_relaimp)
+dplyr::arrange(survey_fit_SG_step_relaimp,desc(relaimp))
+# Gráfico Importancia Relativa
+ggplot(survey_fit_SG_step_relaimp, aes(reorder(as.factor(variables), relaimp), relaimp)) +
+  geom_bar(stat = 'identity', fill = 'blue') +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title = 'Importancia relativa de cada variable',
+       subtitle = 'Var. dep. Satisfacción Global' , x = '', y = '') +
+  coord_flip()
+
+
 
 # Dia
-# f <- as.formula(
-#   paste('Ph1_Satisfaccion_Global ~',
-#         paste(colnames(select(survey, starts_with('P'), -Ph1_Satisfaccion_Global))
-#               , collapse='+')))
+
 
 dia_fit <- lm( as.formula(
   paste('Ph1_Satisfaccion_Global ~',
@@ -98,6 +103,8 @@ b$variables <- rownames(b)
 ggplot(b, aes(reorder(as.factor(variables), a.lmg), a.lmg)) +
   geom_bar(stat = 'identity', fill = 'blue') +
   scale_y_continuous(labels = scales::percent) +
+  labs(title = 'Importancia relativa de cada variable',
+       subtitle = 'Var. dep. Satisfacción Global' , x = '', y = '') +
   coord_flip()
 
 #gráfico con predicción
@@ -106,17 +113,6 @@ dia$model <- predict(b, newdata = dia)
 ggplot(dia) +
   geom_jitter(aes(x=Ph1_Satisfaccion_Global, y =model)) 
 
-
-# Super bueno, explica la explicación del R2
-c <- caret::varImp(dia_fit_step, scale=TRUE)
-cumsum(c)
-# dividimos por R2 pendiente entender que es varIMP
-d <- c/sum(c)*100
-cumsum(d)
-par(mfrow = c(2, 2))
-plot(dia_fit_step)
-
-par(mfrow = c(1, 1))
 
 
 
