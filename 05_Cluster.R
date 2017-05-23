@@ -7,8 +7,9 @@ library(ggplot2)
 
 
 survey <- read.delim("survey.csv",sep = ';')
-#write.table(survey, 'survey.csv',sep=';')
-summary(survey)
+#write.table(survey, 'survey_base.csv',sep=';')
+# survey_base <- read.delim('survey_base.csv', sep = ';')
+# summary(survey_base)
 
 #survey[,colSums(is.na(survey)) < 41]
 
